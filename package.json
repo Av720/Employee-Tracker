@@ -12,7 +12,7 @@
   "dependencies": {
     "console.table": "^0.10.0",
     "figlet": "^1.5.2",
-    "inquire": "^0.4.8",
+    "inquirer": "^9.1.4",
     "mysql2": "^3.2.0"
   }
 }
