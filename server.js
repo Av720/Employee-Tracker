@@ -1,6 +1,6 @@
 // create the dependencies
-const express = require('express')
-const db = require('db')
-
+const mySql = require('mysql2')
+const inquirer = require('inquirer')
+const consoleTable = require("console.table")
 
 
