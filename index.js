@@ -1,17 +1,17 @@
 // create the dependencies
 const mySql = require("mysql2");
-const inquirer = import("inquirer")
+const inquirer = require("inquirer")
 const consoleTable = require("console.table");
 const figlet = require("figlet");
 const log = console.log;
 
-// figlet module prompt
-figlet("EMPLOYEE TRACKER", function (err, data) {
-  if (err) {
-    console.log("Please restart the app!");
-  }
-  log(data);
-});
+// figlet('EMPLOYEE TRACKER!!', function (err, data) {
+//     if (err) {
+//         console.log('Please reopen app!');
+//         console.dir(err);
+//         return;
+//     }
+// })
 
 // Connect to the database using dbnode 
 const dbConnection = mySql.createConnection({
@@ -21,18 +21,18 @@ const dbConnection = mySql.createConnection({
     database: "employeeDb",
 });
 
-dbConnection.connect(err =>  {
+dbConnection.connect(function(err) {
     if (err) throw err;
     
     //log the connection using thread id 
     log(`Successfully connected as id ${dbConnection.threadId}!`);
-
-    // this will start the first prompt and execute the function 
-    firstPrompt();
+    
+    // this will start the figlet fucntion
+    // firstPrompt();
 })
 
 // firstPrompt function - this will prompt the user with the choices to execute
-const firstPrompt = () =>  {
+function firstPrompt() {
 
     inquirer.prompt([
         {
@@ -58,20 +58,17 @@ const firstPrompt = () =>  {
         }
 
     ])
-        .then(answers) => {
-    const { choices } = answers;
-
-}
-
-
-
-
-
+    .then((answers) => {
+        const { choices } = answers;
+        log(choices)
+    })
+    
+    
+    
 
 
 
 
-
-
-
-} // firstPrompt end 
+    
+} // firstPrompt end
+firstPrompt();
