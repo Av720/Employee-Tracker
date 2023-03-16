@@ -3,19 +3,9 @@ const mySql = require("mysql2");
 const inquirer = require("inquirer");
 const consoleTable = require("console.table");
 const figlet = require("figlet");
-const { first } = require("rxjs");
 const log = console.log;
 const tableLog = console.table;
-const chalk = require("chalk")
-
-
-// figlet('EMPLOYEE TRACKER!!', function (err, data) {
-//     if (err) {
-//         console.log('Please reopen app!');
-//         console.dir(err);
-//         return;
-//     }
-// })
+const chalk = require("chalk");
 
 // Connect to the database using dbnode
 const dbConnection = mySql.createConnection({
@@ -25,18 +15,26 @@ const dbConnection = mySql.createConnection({
   database: "employeeDb",
 });
 
-dbConnection.connect(function (err) {
+dbConnection.connect((err) => {
   if (err) throw err;
 
-  //log the connection using thread id
-  log(`Successfully connected as id ${dbConnection.threadId}!`);
-
   // this will start the figlet fucntion
-  // firstPrompt();
+  // figletStartup();
+  log(
+    chalk.bgGreen.bold(`\n Successfully connected as id ${dbConnection.threadId} ! \n`));
+
 });
+//log the connection using thread id
+
+//figlet using textSync
+log(chalk.greenBright.bold("======================================================================================================="));
+log(``);
+log(chalk.redBright.bold(figlet.textSync("EMPLOYEE TRACKER")));
+log(``);
+log(chalk.greenBright.bold(`======================================================================================================`));
 
 // firstPrompt function - this will prompt the user with the choices to execute
-function firstPrompt() {
+const firstPrompt = () => {
   inquirer
     .prompt([
       {
@@ -161,9 +159,13 @@ function firstPrompt() {
         dbConnection.query(query, (err, res) => {
           if (err) throw err;
           tableLog(res);
-            log(chalk.bgMagenta(`Here is a full list of all the Employees!`))
+          log(chalk.bgMagenta(`Here is a full list of all the Employees!`));
 
-            log(chalk.red(`=======================================================================================`))
+          log(
+            chalk.red(
+              `=======================================================================================`
+            )
+          );
 
           firstPrompt();
         });
@@ -182,9 +184,17 @@ function firstPrompt() {
           if (err) throw err;
           tableLog(res);
 
-            log(chalk.bgMagenta(`Here is a view of all the Employees by Department!`))
+          log(
+            chalk.bgMagenta(
+              `Here is a view of all the Employees by Department!`
+            )
+          );
 
-            log(chalk.red(`=======================================================================================`))
+          log(
+            chalk.red(
+              `=======================================================================================`
+            )
+          );
 
           firstPrompt();
         });
@@ -196,9 +206,15 @@ function firstPrompt() {
           if (err) throw err;
           tableLog(res);
 
-            log(chalk.bgMagenta(`Here is a view of all the Employees by Manager!`))
+          log(
+            chalk.bgMagenta(`Here is a view of all the Employees by Manager!`)
+          );
 
-            log(chalk.red(`=======================================================================================`))
+          log(
+            chalk.red(
+              `=======================================================================================`
+            )
+          );
 
           firstPrompt();
         });
@@ -213,6 +229,54 @@ function firstPrompt() {
               value: role.id,
             };
           });
+          inquirer
+            .prompt([
+              {
+                type: "input",
+                name: "firstName",
+                message: "Enter first name of new employee:",
+              },
+              {
+                type: "input",
+                name: "lastName",
+                message: "Enter last name of new employee:",
+              },
+              {
+                type: "list",
+                name: "role",
+                message: "Enter the new role of the employee:",
+                choices: roles,
+              },
+              {
+                type: "list",
+                name: "managerId",
+                message: "Assign a new Manager to the new employee:",
+                choices: [1, 5, 8],
+              },
+            ])
+            .then((data) => {
+              console.log(data.role);
+              dbConnection.query(
+                "INSERT INTO employee SET ?",
+                {
+                  first_name: data.firstName,
+                  last_name: data.lastName,
+                  role_id: data.role,
+                  manager_id: data.managerId,
+                },
+                (err) => {
+                  if (err) throw err;
+
+                  log(
+                    chalk.bgMagenta(
+                      `Successfully added ${data.firstName} to the Employee Roster `
+                    )
+                  );
+
+                  viewAllEmployees();
+                }
+              );
+            });
         });
       }
       //-------------------------------------------------------------------------//
@@ -239,70 +303,80 @@ function firstPrompt() {
 
       //-------------------------------------------------------------------------//
       function viewAllRoles() {
-          const query = `SELECT role.id, role.title, role.salary, department.name AS department
+        const query = `SELECT role.id, role.title, role.salary, department.name AS department
                FROM role
                INNER JOIN department ON role.department_id = department.id`;
 
         dbConnection.query(query, (err, res) => {
           if (err) throw err;
-            tableLog(res);
-            
-            log(chalk.bgMagenta(`Here is a view of all the current roles!`))
+          tableLog(res);
 
-            log(chalk.red(`=======================================================================================`))
+          log(chalk.bgMagenta(`Here is a view of all the current roles!`));
+
+          log(
+            chalk.red(
+              `=======================================================================================`
+            )
+          );
 
           firstPrompt();
         });
       }
       //-------------------------------------------------------------------------//
-        function addRole() {
-            dbConnection.query('SELECT * FROM department', (err, departments) => {
-                if (err) console.log(err);
-                departments = departments.map((department) => {
-                    return {
-                        name: department.name,
-                        value: department.id,
-                    };
-                });
-                inquirer.prompt([
-                        {
-                            type: 'input',
-                            name: 'newRole',
-                            message: 'Enter the title of the new Role: '
-                        },
-                        {
-                            type: 'input',
-                            name: 'salary',
-                            message: 'Enter the salary of the new role:',
-                        },
-                        {
-                            type: 'list',
-                            name: 'departmentId',
-                            message: 'Enter the department of the new role:',
-                            choices: departments,
-                        },
-                    ])
-                    .then((data) => {
-                        dbConnection.query(
-                            'INSERT INTO role SET ?',
-                            {
-                                title: data.newRole,
-                                salary: data.salary,
-                                department_id: data.departmentId,
-                            },
-                            function (err) {
-                                if (err) throw err;
-                            }
-                        );
-                        log(chalk.bgGreen(`Successfully added the ${data.newRole} role!`));
+      function addRole() {
+        dbConnection.query("SELECT * FROM department", (err, departments) => {
+          if (err) console.log(err);
+          departments = departments.map((department) => {
+            return {
+              name: department.name,
+              value: department.id,
+            };
+          });
+          inquirer
+            .prompt([
+              {
+                type: "input",
+                name: "newRole",
+                message: "Enter the title of the new Role: ",
+              },
+              {
+                type: "input",
+                name: "salary",
+                message: "Enter the salary of the new role:",
+              },
+              {
+                type: "list",
+                name: "departmentId",
+                message: "Enter the department of the new role:",
+                choices: departments,
+              },
+            ])
+            .then((data) => {
+              dbConnection.query(
+                "INSERT INTO role SET ?",
+                {
+                  title: data.newRole,
+                  salary: data.salary,
+                  department_id: data.departmentId,
+                },
+                function (err) {
+                  if (err) throw err;
+                }
+              );
+              log(
+                chalk.bgGreen(`Successfully added the ${data.newRole} role!`)
+              );
 
-                        log(chalk.red(`=======================================================================================`))
+              log(
+                chalk.red(
+                  `=======================================================================================`
+                )
+              );
 
-                        viewAllRoles();
-                    });
-
+              viewAllRoles();
             });
-        }
+        });
+      }
       //-------------------------------------------------------------------------//
       function removeRole() {
         //BONUS
@@ -313,18 +387,23 @@ function firstPrompt() {
         const query = "SELECT * FROM department";
         dbConnection.query(query, (err, res) => {
           if (err) throw err;
-            tableLog(res);
-            
-            log(chalk.bgMagenta(`Here is a view of all the departments!`))
+          tableLog(res);
 
-            log(chalk.red(`=======================================================================================`))
+          log(chalk.bgMagenta(`Here is a view of all the departments!`));
+
+          log(
+            chalk.red(
+              `=======================================================================================`
+            )
+          );
 
           firstPrompt();
         });
       }
       //-------------------------------------------------------------------------//
       function addDept() {
-        inquirer.prompt([
+        inquirer
+          .prompt([
             {
               name: "dept",
               type: "input",
@@ -332,15 +411,22 @@ function firstPrompt() {
             },
           ])
           .then(function (answer) {
-            dbConnection.query("INSERT INTO department SET ?",
+            dbConnection.query(
+              "INSERT INTO department SET ?",
               {
                 name: answer.dept,
               },
               function (err) {
                 if (err) throw err;
-                  log(chalk.bgGreen(`Department ${answer.dept} successfully added!`));
+                log(
+                  chalk.bgGreen(`Department ${answer.dept} successfully added!`)
+                );
 
-                  log(chalk.red(`=======================================================================================`))
+                log(
+                  chalk.red(
+                    `=======================================================================================`
+                  )
+                );
 
                 firstPrompt();
               }
@@ -361,12 +447,12 @@ function firstPrompt() {
       }
       //-------------------------------------------------------------------------//
       function quit() {
-          log(chalk.bgYellow("Have a good day! "));
+        log(chalk.bgYellow("Have a good day! "));
         process.exit();
       }
       //-------------------------------------------------------------------------//
     }); // end of .then function
-} // end of first prompt function
+}; // end of first prompt function
 
 // firstPrompt end
 firstPrompt();
