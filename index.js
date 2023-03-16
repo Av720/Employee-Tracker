@@ -145,7 +145,17 @@ function firstPrompt() {
       //-------------------------------------------------------------------------//
       // view all employees function
       function viewAllEmployees() {
-        const query = "SELECT * FROM employee";
+          const query = `SELECT employee.id, 
+                      employee.first_name, 
+                      employee.last_name, 
+                      role.title, 
+                      department.name AS department,
+                      role.salary, 
+                      CONCAT (manager.first_name, " ", manager.last_name) AS manager
+               FROM employee
+                      LEFT JOIN role ON employee.role_id = role.id
+                      LEFT JOIN department ON role.department_id = department.id
+                      LEFT JOIN employee manager ON employee.manager_id = manager.id`; 
         dbConnection.query(query, (err, res) => {
           if (err) throw err;
           tableLog(res);
@@ -171,36 +181,50 @@ function firstPrompt() {
         });
       }
       //-------------------------------------------------------------------------//
-      function employeesByMngr() {
-        const query = "";
-      }
+        function employeesByMngr() {
+            const query = 'SELECT * FROM employee ORDER BY manager_id DESC';
+            dbConnection.query(query, (err, res) => {
+                if (err) throw err;
+                tableLog(res);
+
+                firstPrompt();
+
+            })
+        }
       //-------------------------------------------------------------------------//
-      function addEmployee() {
-        const query = "";
-      }
+        function addEmployee() {
+            dbConnection.query('SELECT * FROM role', (err, roles) => {
+                if (err) console.log(err);
+                roles = roles.map((role) => {
+                    return {
+                        name: role.title,
+                        value: role.id,
+                    }
+                })
+            })
+        }
       //-------------------------------------------------------------------------//
-      function removeEmployee() {
+        function removeEmployee() { //BONUS
         const query = "";
       }
 
       //-------------------------------------------------------------------------//
-      function updateEmployee() {
+      function updateEmployee() {  
         const query = "";
       }
       //-------------------------------------------------------------------------//
-      function updateEmploRole() {
+      function updateEmploRole() { 
         const query = "";
       }
       //-------------------------------------------------------------------------//
-      function updateEmploMngr() {
+      function updateEmploMngr() { //BONUS
         const query = "";
       }
 
       //-------------------------------------------------------------------------//
       function viewAllRoles() {
-        const query = `SELECT role.id, role.title, department.name AS department
-               FROM role
-               INNER JOIN department ON role.department_id = department.id`;
+          const query = `SELECT employee.first_name, employee.last_name, role.salary, role.title AS Title FROM employee JOIN role ON employee.role_id = role.id;`
+
         dbConnection.query(query, (err, res) => {
           if (err) throw err;
           tableLog(res);
@@ -227,19 +251,16 @@ function firstPrompt() {
         });
       }
       //-------------------------------------------------------------------------//
-      function addDept() {
+      function addDept() { 
+        const query = ""; 
+      }
+      //-------------------------------------------------------------------------//
+        function removeDept() { //BONUS
         const query = "";
       }
       //-------------------------------------------------------------------------//
-      function removeDept() {
-        const query = "";
-      }
-      //-------------------------------------------------------------------------//
-      function removeDept() {
-        const query = "";
-      }
-      //-------------------------------------------------------------------------//
-      function deptBudgets() {
+
+        function deptBudgets() { //BONUS
         const query = "";
       }
       //-------------------------------------------------------------------------//
