@@ -77,7 +77,7 @@ const firstPrompt = () => {
           break;
 
         //"Add employee", user input
-        case "Add employee":
+        case "Add Employee":
           addEmployee();
           break;
 
@@ -91,7 +91,7 @@ const firstPrompt = () => {
           viewAllRoles();
           break;
         
-        case "Add Role ":
+        case "Add role":
           addRole();
           break;
 
