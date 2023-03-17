@@ -23,6 +23,8 @@ npm i
 ## Usage 
 Please see video for reference: 
 
+https://user-images.githubusercontent.com/120581801/225819262-88f69896-bff4-445b-982a-d3e7877a3c26.mp4
+
 ## Preview
 
 ![tracker1](https://user-images.githubusercontent.com/120581801/225815709-0b9e14c9-ef47-4c2c-963a-135c72b02fdd.png)
