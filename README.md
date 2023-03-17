@@ -25,6 +25,8 @@ Please see video for reference:
 
 ## Preview
 
+![tracker1](https://user-images.githubusercontent.com/120581801/225815709-0b9e14c9-ef47-4c2c-963a-135c72b02fdd.png)
+![tracker2](https://user-images.githubusercontent.com/120581801/225815733-f5b1f057-432d-42c3-89ed-1d7fdc277a25.png)
 
 ## License
     This application is covered by the MIT license.
