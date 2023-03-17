@@ -17,21 +17,23 @@ const dbConnection = mySql.createConnection({
 
 dbConnection.connect((err) => {
   if (err) throw err;
-
-  // this will start the figlet fucntion
-  // figletStartup();
-  log(
-    chalk.bgGreen.bold(`\n Successfully connected as id ${dbConnection.threadId} ! \n`));
-
 });
 //log the connection using thread id
 
 //figlet using textSync
-log(chalk.greenBright.bold("======================================================================================================="));
+log(
+  chalk.greenBright.bold(
+    "======================================================================================================="
+  )
+);
 log(``);
 log(chalk.redBright.bold(figlet.textSync("EMPLOYEE TRACKER")));
 log(``);
-log(chalk.greenBright.bold(`======================================================================================================`));
+log(
+  chalk.greenBright.bold(
+    `======================================================================================================`
+  )
+);
 
 // firstPrompt function - this will prompt the user with the choices to execute
 const firstPrompt = () => {
@@ -159,7 +161,7 @@ const firstPrompt = () => {
         dbConnection.query(query, (err, res) => {
           if (err) throw err;
           tableLog(res);
-          log(chalk.bgMagenta(`Here is a full list of all the Employees!`));
+            log(chalk.bgRed(`Here is a full list of all the Employees!`));
 
           log(
             chalk.red(
@@ -185,7 +187,7 @@ const firstPrompt = () => {
           tableLog(res);
 
           log(
-            chalk.bgMagenta(
+              chalk.bgRed(
               `Here is a view of all the Employees by Department!`
             )
           );
@@ -207,7 +209,7 @@ const firstPrompt = () => {
           tableLog(res);
 
           log(
-            chalk.bgMagenta(`Here is a view of all the Employees by Manager!`)
+              chalk.bgRed(`Here is a view of all the Employees by Manager!`)
           );
 
           log(
@@ -268,7 +270,7 @@ const firstPrompt = () => {
                   if (err) throw err;
 
                   log(
-                    chalk.bgMagenta(
+                    chalk.bgGreen(
                       `Successfully added ${data.firstName} to the Employee Roster `
                     )
                   );
@@ -311,7 +313,7 @@ const firstPrompt = () => {
           if (err) throw err;
           tableLog(res);
 
-          log(chalk.bgMagenta(`Here is a view of all the current roles!`));
+            log(chalk.bgRed(`Here is a view of all the current roles!`));
 
           log(
             chalk.red(
@@ -364,7 +366,7 @@ const firstPrompt = () => {
                 }
               );
               log(
-                chalk.bgGreen(`Successfully added the ${data.newRole} role!`)
+                  chalk.bgGreen(`Successfully added the ${data.newRole} role!`)
               );
 
               log(
@@ -389,7 +391,7 @@ const firstPrompt = () => {
           if (err) throw err;
           tableLog(res);
 
-          log(chalk.bgMagenta(`Here is a view of all the departments!`));
+            log(chalk.bgRed(`Here is a view of all the departments!`));
 
           log(
             chalk.red(
@@ -442,8 +444,24 @@ const firstPrompt = () => {
       //-------------------------------------------------------------------------//
 
       function deptBudgets() {
-        //BONUS
-        const query = "";
+        const sql = `SELECT department_id AS id, 
+                      department.name AS department,
+                      SUM(salary) AS budget
+               FROM  role  
+               JOIN department ON role.department_id = department.id GROUP BY  department_id`;
+
+        dbConnection.query(sql, (err, rows) => {
+          if (err) throw err;
+          console.table(rows);
+
+          log(chalk.bgRed(`Here is a view of all the Department Budgets! `));
+          log(
+            chalk.red(
+              `=======================================================================================`
+            )
+          );
+          firstPrompt();
+        });
       }
       //-------------------------------------------------------------------------//
       function quit() {
