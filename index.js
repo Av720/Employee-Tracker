@@ -85,38 +85,18 @@ const firstPrompt = () => {
           addEmployee();
           break;
 
-        // "Remove employee", user input
-        case "Remove employee":
-          removeEmployee();
-          break;
-
-        //   "Update employee role", user input
-        case "Update employee role":
-          updateEmployee();
-          break;
-
         // "Update employee role", user input
         case "Update employee role":
           updateEmploRole();
-          break;
-
-        //"Update employee manager", user input
-        case "Update employee manager":
-          updateEmploMngr();
           break;
 
         // "View all roles", user input
         case "View all roles":
           viewAllRoles();
           break;
-
-        //"Add role", user input
-        case "Add role":
+        
+        case "Add Role ":
           addRole();
-
-        // "Remove role", user input
-        case "Remove role":
-          removeRole();
           break;
 
         //"View all Departments", user input
@@ -127,11 +107,6 @@ const firstPrompt = () => {
         //"Add a department", user input
         case "Add a department":
           addDept();
-          break;
-
-        //"Remove Department", user input
-        case "Remove department":
-          removeDept();
           break;
 
         // "View department budgets"
@@ -161,7 +136,7 @@ const firstPrompt = () => {
         dbConnection.query(query, (err, res) => {
           if (err) throw err;
           tableLog(res);
-            log(chalk.bgRed(`Here is a full list of all the Employees!`));
+          log(chalk.bgRed(`Here is a full list of all the Employees!`));
 
           log(
             chalk.red(
@@ -187,9 +162,7 @@ const firstPrompt = () => {
           tableLog(res);
 
           log(
-              chalk.bgRed(
-              `Here is a view of all the Employees by Department!`
-            )
+            chalk.bgRed(`Here is a view of all the Employees by Department!`)
           );
 
           log(
@@ -208,9 +181,7 @@ const firstPrompt = () => {
           if (err) throw err;
           tableLog(res);
 
-          log(
-              chalk.bgRed(`Here is a view of all the Employees by Manager!`)
-          );
+          log(chalk.bgRed(`Here is a view of all the Employees by Manager!`));
 
           log(
             chalk.red(
@@ -282,28 +253,68 @@ const firstPrompt = () => {
         });
       }
       //-------------------------------------------------------------------------//
-      function removeEmployee() {
-        //BONUS
 
-        const query = "";
-      }
-
-      //-------------------------------------------------------------------------//
-      function updateEmployee() {
-        const query = "";
-      }
-      //-------------------------------------------------------------------------//
       function updateEmploRole() {
-        const query = "";
-      }
-      //-------------------------------------------------------------------------//
-      function updateEmploMngr() {
-        //BONUS
+        console.log("You have selected update employee role");
+        dbConnection.query(
+          'SELECT CONCAT(first_name, " ", last_name) AS name, id AS value FROM employee',
+          (err, data) => {
+            dbConnection.query(
+              "SELECT id AS value, title AS name FROM role",
+              (err, roleData) => {
+                inquirer
+                  .prompt([
+                    {
+                      type: "list",
+                      name: "employee_id",
+                      message: "Which eployee's role would you like to update?",
+                      choices: data,
+                    },
+                    {
+                      type: "list",
+                      name: "role_id",
+                      message:
+                        "Which role do you want to assign the selected employee?",
+                      choices: roleData,
+                    },
+                  ])
+                  .then((data) => {
+                    let id = data.employee_id;
+                    let role_id = data.role_id;
+                    dbConnection.query(
+                      "UPDATE employee SET role_id = ? WHERE id = ?",
+                      [role_id, id],
+                      (err, data) => {
+                        log(
+                          chalk.red(
+                            `=======================================================================================`
+                          )
+                        );
+                        err
+                          ? console.log(err)
+                          : log(
+                              chalk.bgGreen(
+                                "Succesfully updated the new employee role!"
+                              )
+                            );
 
-        const query = "";
+                        log(
+                          chalk.red(
+                            `=======================================================================================`
+                          )
+                        );
+                        viewAllEmployees();
+                      }
+                    );
+                  });
+              }
+            );
+          }
+        );
       }
 
       //-------------------------------------------------------------------------//
+      
       function viewAllRoles() {
         const query = `SELECT role.id, role.title, role.salary, department.name AS department
                FROM role
@@ -313,7 +324,7 @@ const firstPrompt = () => {
           if (err) throw err;
           tableLog(res);
 
-            log(chalk.bgRed(`Here is a view of all the current roles!`));
+          log(chalk.bgRed(`Here is a view of all the current roles!`));
 
           log(
             chalk.red(
@@ -366,7 +377,7 @@ const firstPrompt = () => {
                 }
               );
               log(
-                  chalk.bgGreen(`Successfully added the ${data.newRole} role!`)
+                chalk.bgGreen(`Successfully added the ${data.newRole} role!`)
               );
 
               log(
@@ -380,18 +391,14 @@ const firstPrompt = () => {
         });
       }
       //-------------------------------------------------------------------------//
-      function removeRole() {
-        //BONUS
-        const query = "";
-      }
-      //-------------------------------------------------------------------------//
+
       function viewAllDepartments() {
         const query = "SELECT * FROM department";
         dbConnection.query(query, (err, res) => {
           if (err) throw err;
           tableLog(res);
 
-            log(chalk.bgRed(`Here is a view of all the departments!`));
+          log(chalk.bgRed(`Here is a view of all the departments!`));
 
           log(
             chalk.red(
@@ -435,12 +442,7 @@ const firstPrompt = () => {
             );
           });
       }
-      //-------------------------------------------------------------------------//
-      function removeDept() {
-        //BONUS
-
-        const query = "";
-      }
+      //
       //-------------------------------------------------------------------------//
 
       function deptBudgets() {
