@@ -6,7 +6,7 @@
 ![Github License](https://img.shields.io/badge/license-MIT-red.svg)
 
 ## Description 
-This application will track all employees within your company.
+A CLI content management system for managing a company's employees using node, inquirer, and MySQL.
 
 ## Table of Contents 
 
@@ -21,7 +21,10 @@ This application will track all employees within your company.
 npm i
 
 ## Usage 
-Nothing
+Please see video for reference: 
+
+## Preview
+
 
 ## License
     This application is covered by the MIT license.
@@ -29,7 +32,7 @@ Nothing
 ## Testing
 To run tests, run the following command:
 
-N/A
+(No testing required)
 
 ## Contribution 
 No Contributions
